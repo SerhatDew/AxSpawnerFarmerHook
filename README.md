@@ -2,7 +2,15 @@
 
 **Türkçe** · [**English**](README.en.md)
 
+![Java 21+](https://img.shields.io/badge/Java-21%2B-F4BD60?style=flat-square)
+![Paper API 1.21.4](https://img.shields.io/badge/Paper_API-1.21.4-55C7F4?style=flat-square)
+[![GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-4ADB9B?style=flat-square)](LICENSE)
+
 AxSpawners'ın yeni ürettiği eşyaları, spawner'ın bulunduğu bölgedeki uxmFarmer'a aktaran bağımsız Paper eklentisi. AxSpawners veya uxmFarmer üzerinde değişiklik gerektirmez.
+
+![Yeni spawner eşyalarının çiftçiye aktarımı ve kalan miktarın AxSpawners deposuna yönlendirilmesi](assets/collection-flow.gif)
+
+*Temsili işleyiş animasyonu; oyun içi kayıt değildir.*
 
 ## Gereksinimler
 
