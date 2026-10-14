@@ -27,7 +27,20 @@ class LootTransferTest {
         registries.close();
     }
 
-    @Test void fractionalRemainderCannotOverfillAnExistingSpawnerSlot() {
+    @Test void atTheSlotLimitTheRemainderOnlyTopsUpTheLastStack() {
+        assertEquals(64L, storeRemainderOnto62(1, 1));
+    }
+
+    @Test void belowTheSlotLimitTheWholeRemainderIsStoredLikeAxSpawners() {
+        assertEquals(69L, storeRemainderOnto62(0, 1));
+    }
+
+    @Test void overTheSlotLimitTheRemainderIsDroppedLikeAxSpawners() {
+        assertEquals(62L, storeRemainderOnto62(2, 1));
+    }
+
+    /** 4 items x 10 spawners, farmer takes 13: 2 whole units go to Ax and a residue of 7 remains. */
+    private long storeRemainderOnto62(long usedSlots, long maxSlots) {
         FarmerCollection farmer = mock(FarmerCollection.class);
         when(farmer.collect(any(), any(), anyInt())).thenReturn(13);
         ItemStack item = mock(ItemStack.class);
@@ -39,8 +52,9 @@ class LootTransferTest {
         Map<ItemStack, Long> storage = new HashMap<>();
         storage.put(key, 62L);
         new LootTransfer(farmer).collect(new Location(null, 0, 64, 0), 10,
-            new ArrayList<>(List.of(item)), storage, 1, 1);
-        assertEquals(64L, storage.get(key));
+            new ArrayList<>(List.of(item)), storage, usedSlots, maxSlots);
+        verify(item).setAmount(2);
+        return storage.get(key);
     }
 
     @Test void stackedLootIsCollectedOnceWithoutBeingAddedAgainByAxSpawners() {

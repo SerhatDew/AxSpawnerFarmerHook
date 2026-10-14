@@ -40,21 +40,20 @@ final class LootTransfer {
             long remaining = generated - accepted;
             int units = (int) (remaining / spawnerAmount);
             long residue = remaining % spawnerAmount;
-            if (residue != 0) {
+            if (residue != 0 && usedSlots <= maxSlots) {
                 // A partial farmer capacity need not be divisible by the stacked spawner count.
-                // Keep this exact residue separately; the remaining whole units still use AxSpawners.add.
+                // Store this exact residue the way Spawner.add would; the whole units still use it.
                 ItemStack key = item.clone();
                 key.setAmount(1);
-                long current = storage.getOrDefault(key, 0L);
-                int stackSize = key.getMaxStackSize();
-                long partialSpace = current % stackSize == 0 ? 0 : stackSize - current % stackSize;
-                long freeSlots = Math.max(0, maxSlots - usedSlots);
-                long room = freeSlots > (Long.MAX_VALUE - partialSpace) / stackSize
-                    ? Long.MAX_VALUE : freeSlots * stackSize + partialSpace;
-                long toStore = usedSlots > maxSlots ? 0 : Math.min(residue, room);
+                long toStore = residue;
+                if (usedSlots == maxSlots) {
+                    // At the slot limit AxSpawners only tops up the item's last partial stack.
+                    long current = storage.getOrDefault(key, 0L);
+                    int stackSize = key.getMaxStackSize();
+                    toStore = Math.min(residue, Math.ceilDiv(current, stackSize) * stackSize - current);
+                }
                 if (toStore > 0) {
                     storage.merge(key, toStore, Math::addExact);
-                    usedSlots += Math.ceilDiv(current + toStore, stackSize) - Math.ceilDiv(current, stackSize);
                     storageChanged = true;
                 }
             }
