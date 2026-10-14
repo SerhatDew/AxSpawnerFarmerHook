@@ -87,4 +87,25 @@ class FarmerCollectionTest {
         assertEquals(0, collection.collect(at, item, 40));
         verify(plugin.getStorageService(), never()).addProduct(any(), any(), anyInt(), anyBoolean());
     }
+
+    @Test void acceptedLootGoesThroughUxmFarmerStorageWithProduction() {
+        when(plugin.getStorageService().addProduct(farmer, Material.BONE, 40, true)).thenReturn(25);
+        assertEquals(25, collection.collect(at, item, 40));
+    }
+
+    @Test void bonusFromTheCollectEventIsNotSubtractedFromSpawnerLoot() {
+        when(plugin.getStorageService().addProduct(farmer, Material.BONE, 40, true)).thenReturn(55);
+        assertEquals(40, collection.collect(at, item, 40));
+    }
+
+    @Test void namedLootFollowsTheCustomItemSetting() {
+        when(item.hasItemMeta()).thenReturn(true);
+        when(item.hasData(DataComponentTypes.CUSTOM_NAME)).thenReturn(true);
+        when(plugin.getStorageService().addProduct(farmer, Material.BONE, 40, true)).thenReturn(40);
+        assertEquals(0, collection.collect(at, item, 40));
+        verify(plugin.getStorageService(), never()).addProduct(any(), any(), anyInt(), anyBoolean());
+
+        when(plugin.getGeneralSettings().isCollectCustomItems()).thenReturn(true);
+        assertEquals(40, collection.collect(at, item, 40));
+    }
 }
