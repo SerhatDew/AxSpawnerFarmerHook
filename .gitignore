@@ -1,7 +1,7 @@
 /target/
 /ref/
 /lib/
-/.github/
+/.github/modernize/
 /.idea/
 /.vscode/
 *.iml
