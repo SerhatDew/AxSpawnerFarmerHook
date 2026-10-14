@@ -7,26 +7,26 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.List;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class AxSpawnerFarmerHook extends JavaPlugin implements Listener {
+    private final LootQueue<Spawner, ItemStack> pending = new LootQueue<>();
     private FarmerPlugin farmer;
     private LootTransfer transfer;
     private MethodHandle location;
-    private boolean collectSpawnerDrops;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        collectSpawnerDrops = getConfig().getBoolean("collect-spawner-drops", true);
+        boolean collectSpawnerDrops = getConfig().getBoolean("collect-spawner-drops", true);
         farmer = (FarmerPlugin) getServer().getPluginManager().getPlugin("uxmFarmer");
         if (farmer == null || !farmer.isEnabled()) {
             getLogger().severe("uxmFarmer must be enabled before this hook.");
@@ -47,48 +47,48 @@ public final class AxSpawnerFarmerHook extends JavaPlugin implements Listener {
             return;
         }
         transfer = new LootTransfer(new FarmerCollection(farmer));
-        getServer().getPluginManager().registerEvents(this, this);
+        if (collectSpawnerDrops) {
+            getServer().getPluginManager().registerEvents(this, this);
+            getServer().getScheduler().runTaskTimer(this, () -> pending.drain(this::deliver), 1L, 1L);
+        }
         getLogger().info("Hook ready; collect-spawner-drops=" + collectSpawnerDrops);
+    }
+
+    @Override
+    public void onDisable() {
+        // Listeners stay registered until after onDisable returns; late loot is left to AxSpawners.
+        pending.close();
+        pending.drain(this::deliver);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLoot(AxSpawnersLootGenerateEvent event) {
-        if (!collectSpawnerDrops || !farmer.isEnabled()) {
+        if (!farmer.isEnabled()) {
             return;
         }
         if (Bukkit.isPrimaryThread()) {
-            collect(event);
+            collect(event.getSpawner(), event.getItems());
             return;
         }
-        // Do not let AxSpawners.add race the farmer transaction or consume the old list.
-        Future<Void> task = getServer().getScheduler().callSyncMethod(this, () -> {
-            collect(event);
-            return null;
-        });
-        boolean interrupted = false;
+        // AxSpawners adds this list right after the event on its ticker thread, and only after
+        // the whole tick may it start the next one. Take the loot out of the list so that add is a
+        // no-op, then finish it on the next server tick instead of stalling the ticker.
+        pending.offer(event.getSpawner(), event.getItems());
+    }
+
+    private void deliver(Spawner spawner, List<ItemStack> items) {
         try {
-            while (true) {
-                try {
-                    task.get();
-                    return;
-                } catch (InterruptedException ex) {
-                    // A timed-out Ax ticker can interrupt its worker. The transaction may already
-                    // have committed: wait for the same task, never abandon it and duplicate loot.
-                    interrupted = true;
-                } catch (ExecutionException ex) {
-                    throw new IllegalStateException("Spawner loot transfer failed", ex.getCause());
-                }
-            }
-        } finally {
-            if (interrupted) {
-                Thread.currentThread().interrupt();
-            }
+            collect(spawner, items);
+        } catch (RuntimeException ex) {
+            getLogger().log(Level.SEVERE, "Spawner loot transfer failed; the rest goes to AxSpawners storage.", ex);
+        }
+        if (!items.isEmpty()) {
+            spawner.add(items);
         }
     }
 
-    private void collect(AxSpawnersLootGenerateEvent event) {
-        Spawner spawner = event.getSpawner();
-        if (!collectSpawnerDrops || !farmer.isEnabled() || spawner.isRemoved()) {
+    private void collect(Spawner spawner, List<ItemStack> items) {
+        if (!farmer.isEnabled() || spawner.isRemoved()) {
             return;
         }
         Location at;
@@ -97,8 +97,8 @@ public final class AxSpawnerFarmerHook extends JavaPlugin implements Listener {
         } catch (Throwable ex) {
             throw new IllegalStateException("Cannot resolve AxSpawners location", ex);
         }
-        // Mutate the original list: AxSpawners 1.12.1 does not read event.setItems afterwards.
-        if (transfer.collect(at, spawner.getAmount(), event.getItems(), spawner.getStoredItems(),
+        // Mutate the list in place: AxSpawners 1.12.1 adds the event's own list, not event.setItems.
+        if (transfer.collect(at, spawner.getAmount(), items, spawner.getStoredItems(),
             spawner.getUsedSlots(), spawner.getMaxSlots())) {
             spawner.updateGuis();
         }

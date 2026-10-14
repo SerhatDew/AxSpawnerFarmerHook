@@ -59,7 +59,8 @@ Set it to `false` to disable collection. Restart the server after changing the s
 - Only configured, enabled products are collected. Custom-item and model-data restrictions are respected.
 - Collection uses uxmFarmer's existing storage service, including its events, statistics, production and auto-sell behavior.
 - Stacked spawner quantities are accounted for. Uncollected loot remains subject to AxSpawners storage limits and overflow behavior.
-- Asynchronous loot generation is transferred to the primary server thread before AxSpawners continues adding the remaining loot.
+- Loot that AxSpawners generates asynchronously is handled on the main thread on the next server tick; the AxSpawners spawner loop does not wait for it. Whatever the farmer cannot take is added to AxSpawners storage at the same time.
+- Queued loot is delivered when the hook shuts down; loot generated after that goes straight to AxSpawners storage.
 
 ## Troubleshooting
 

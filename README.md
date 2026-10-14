@@ -59,7 +59,8 @@ Toplamayı kapatmak için `false` yap. Ayarı değiştirdikten sonra sunucuyu ye
 - Yalnızca tanımlanmış ve etkin ürünler toplanır. Özel eşya ve model-data kısıtları korunur.
 - uxmFarmer'ın mevcut depolama servisi kullanılır; toplama olayları, istatistikler, üretim ve otomatik satış davranışı korunur.
 - Stack'li spawner miktarları hesaba katılır. Toplanamayan eşyalar AxSpawners'ın depo limitlerine ve taşma davranışına tabidir.
-- Asenkron üretim, AxSpawners kalan eşyaları depolamaya devam etmeden önce sunucunun ana iş parçacığına aktarılır.
+- AxSpawners'ın asenkron ürettiği eşyalar bir sonraki sunucu tick'inde ana iş parçacığında işlenir; AxSpawners'ın spawner döngüsü bu işlemi beklemez. Çiftçiye sığmayan kısım aynı anda AxSpawners deposuna eklenir.
+- Hook kapanırken sırada bekleyen eşyalar teslim edilir; kapanıştan sonra üretilen eşyalar doğrudan AxSpawners deposuna gider.
 
 ## Sorun giderme
 
