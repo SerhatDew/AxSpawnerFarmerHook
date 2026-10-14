@@ -12,6 +12,8 @@ AxSpawners'ın yeni ürettiği eşyaları, spawner'ın bulunduğu bölgedeki uxm
 
 *Temsili işleyiş animasyonu; oyun içi kayıt değildir.*
 
+[Gereksinimler](#gereksinimler) · [Kurulum](#kurulum) · [Derleme](#derleme) · [Toplama kuralları](#toplama-kuralları) · [Sorun giderme](#sorun-giderme)
+
 ## Gereksinimler
 
 - Java 21 veya üzeri.
@@ -58,6 +60,17 @@ Toplamayı kapatmak için `false` yap. Ayarı değiştirdikten sonra sunucuyu ye
 - uxmFarmer'ın mevcut depolama servisi kullanılır; toplama olayları, istatistikler, üretim ve otomatik satış davranışı korunur.
 - Stack'li spawner miktarları hesaba katılır. Toplanamayan eşyalar AxSpawners'ın depo limitlerine ve taşma davranışına tabidir.
 - Asenkron üretim, AxSpawners kalan eşyaları depolamaya devam etmeden önce sunucunun ana iş parçacığına aktarılır.
+
+## Sorun giderme
+
+| Belirti | Kontrol |
+| --- | --- |
+| Çiftçi hiç eşya toplamıyor | Hook'un `collect-spawner-drops` ayarını, çiftçinin doğal eşya toplama anahtarını ve spawner'ın bulunduğu bölgedeki çiftçiyi kontrol et. |
+| Yalnızca bazı ürünler toplanmıyor | uxmFarmer ürün tanımını, ürünün açık olmasını ve varsa model-data eşleşmesini kontrol et. |
+| Çiftçiye sığmayan eşyalar kayboluyor | AxSpawners deposunun kapasitesini kontrol et. Depo doluyken AxSpawners'ın kendi taşma davranışı geçerlidir. |
+| Hook başlatılamıyor | Konsoldaki ilk hatayı incele. AxSpawners ve uxmFarmer'ın etkin olduğundan ve sunucunun gereksinimleri karşıladığından emin ol. |
+
+Sorun bildirirken sunucu, Java, AxSpawners ve uxmFarmer sürümleriyle ilgili konsol hatasını ekle. Token, parola ve oyuncu verilerini paylaşma.
 
 ## Lisans
 

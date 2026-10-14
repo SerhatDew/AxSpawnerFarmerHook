@@ -12,6 +12,8 @@ A separate Paper plugin that sends newly generated AxSpawners loot to the uxmFar
 
 *Illustration of the collection flow, not an in-game recording.*
 
+[Requirements](#requirements) · [Installation](#installation) · [Build](#build) · [Collection rules](#collection-rules) · [Troubleshooting](#troubleshooting)
+
 ## Requirements
 
 - Java 21 or newer.
@@ -58,6 +60,17 @@ Set it to `false` to disable collection. Restart the server after changing the s
 - Collection uses uxmFarmer's existing storage service, including its events, statistics, production and auto-sell behavior.
 - Stacked spawner quantities are accounted for. Uncollected loot remains subject to AxSpawners storage limits and overflow behavior.
 - Asynchronous loot generation is transferred to the primary server thread before AxSpawners continues adding the remaining loot.
+
+## Troubleshooting
+
+| Symptom | Check |
+| --- | --- |
+| The farmer collects nothing | Check the hook's `collect-spawner-drops` setting, the farmer's natural-drop switch and the farmer assigned to the spawner's region. |
+| Only some products are skipped | Check the uxmFarmer product definition, its enabled state and any required model-data match. |
+| Loot that does not fit the farmer disappears | Check the AxSpawners storage capacity. A full spawner retains AxSpawners' own overflow behavior. |
+| The hook fails to enable | Inspect the first console error. Ensure AxSpawners and uxmFarmer are enabled and the server meets the requirements. |
+
+When reporting a problem, include the server, Java, AxSpawners and uxmFarmer versions along with the relevant console error. Do not share tokens, passwords or player data.
 
 ## License
 
