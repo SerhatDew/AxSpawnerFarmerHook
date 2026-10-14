@@ -1,21 +1,23 @@
 # AxSpawnerFarmerHook
 
-A separate Paper plugin that sends newly generated AxSpawners loot to the uxmFarmer in the spawner's region. Neither dependency needs to be modified.
+**Türkçe** · [**English**](README.en.md)
 
-## Requirements
+AxSpawners'ın yeni ürettiği eşyaları, spawner'ın bulunduğu bölgedeki uxmFarmer'a aktaran bağımsız Paper eklentisi. AxSpawners veya uxmFarmer üzerinde değişiklik gerektirmez.
 
-- Java 21 or newer.
-- Paper; the build targets the 1.21.4 API. Paper 26.2 has not been verified. Folia is not supported.
-- AxSpawners 1.12.1 and uxmFarmer 3.18.0.
-- Maven 3 to build from source.
+## Gereksinimler
 
-Java 21 bytecode is compatible with Java 25, but that does not establish compatibility with a particular server version.
+- Java 21 veya üzeri.
+- Paper; proje 1.21.4 API'sine karşı derlenir. Paper 26.2 henüz doğrulanmadı. Folia desteklenmez.
+- AxSpawners 1.12.1 ve uxmFarmer 3.18.0.
+- Kaynaktan derlemek için Maven 3.
 
-## Build
+Java 21 bytecode'u Java 25 ile uyumludur; bu, belirli bir sunucu sürümünün desteklendiği anlamına gelmez.
 
-Obtain AxSpawners and uxmFarmer separately under their respective licenses. Their jars and sources are not distributed in this repository.
+## Derleme
 
-Place the jars in `lib/AxSpawners-1.12.1.jar` and `lib/uxmFarmer-3.18.0.jar`, then install them into your local Maven repository:
+AxSpawners ve uxmFarmer'ı kendi lisans koşullarına uygun şekilde ayrıca edin. Bu eklentilerin jarları ve kaynakları bu repoda dağıtılmaz.
+
+Jarları `lib/AxSpawners-1.12.1.jar` ve `lib/uxmFarmer-3.18.0.jar` konumlarına koyup yerel Maven deposuna yükle:
 
 ```sh
 mvn install:install-file -Dfile=lib/AxSpawners-1.12.1.jar -DgroupId=com.artillexstudios -DartifactId=AxSpawners -Dversion=1.12.1 -Dpackaging=jar -DgeneratePom=true
@@ -23,34 +25,35 @@ mvn install:install-file -Dfile=lib/uxmFarmer-3.18.0.jar -DgroupId=com.uxplima -
 mvn clean verify
 ```
 
-Output: `target/AxSpawnerFarmerHook.jar`. Dependency jars are not bundled into the output.
+Çıktı: `target/AxSpawnerFarmerHook.jar`. Bağımlılık jarları bu dosyaya eklenmez.
 
-## Installation
+## Kurulum
 
-1. Install and enable AxSpawners and uxmFarmer, including their required dependencies.
-2. Put `AxSpawnerFarmerHook.jar` in the server's `plugins` directory.
-3. Restart the server.
+1. AxSpawners ve uxmFarmer'ı, kendi gerekli bağımlılıklarıyla birlikte kurup etkinleştir.
+2. `AxSpawnerFarmerHook.jar` dosyasını sunucunun `plugins` klasörüne koy.
+3. Sunucuyu yeniden başlat.
 
-The hook creates `plugins/AxSpawnerFarmerHook/config.yml`:
+Hook, `plugins/AxSpawnerFarmerHook/config.yml` dosyasını oluşturur:
 
 ```yaml
 collect-spawner-drops: true
 ```
 
-Set it to `false` to disable collection. Restart the server after changing the setting.
+Toplamayı kapatmak için `false` yap. Ayarı değiştirdikten sonra sunucuyu yeniden başlat.
 
-## Collection rules
+## Toplama kuralları
 
-- Only newly generated loot is handled. Existing spawner storage and XP are not imported.
-- The farmer is selected by the spawner's location through uxmFarmer's configured region integration.
-- The world must be allowed by uxmFarmer. The farmer and its natural-drop collection switch must be enabled.
-- Only configured, enabled products are collected. Custom-item and model-data restrictions are respected.
-- Collection uses uxmFarmer's existing storage service, including its events, statistics, production and auto-sell behavior.
-- Stacked spawner quantities are accounted for. Uncollected loot remains subject to AxSpawners storage limits and overflow behavior.
-- Asynchronous loot generation is transferred to the primary server thread before AxSpawners continues adding the remaining loot.
+- Yalnızca yeni üretilen eşyalar işlenir. Mevcut spawner deposu ve XP aktarılmaz.
+- Çiftçi, spawner'ın konumuna göre uxmFarmer'ın yapılandırılmış bölge entegrasyonu üzerinden seçilir.
+- Dünya uxmFarmer tarafından izin verilen dünyalardan olmalıdır. Çiftçi ve çiftçinin doğal eşya toplama anahtarı açık olmalıdır.
+- Yalnızca tanımlanmış ve etkin ürünler toplanır. Özel eşya ve model-data kısıtları korunur.
+- uxmFarmer'ın mevcut depolama servisi kullanılır; toplama olayları, istatistikler, üretim ve otomatik satış davranışı korunur.
+- Stack'li spawner miktarları hesaba katılır. Toplanamayan eşyalar AxSpawners'ın depo limitlerine ve taşma davranışına tabidir.
+- Asenkron üretim, AxSpawners kalan eşyaları depolamaya devam etmeden önce sunucunun ana iş parçacığına aktarılır.
 
-## License
+## Lisans
 
-The hook source is licensed under **GPL-3.0-only**. See [LICENSE](LICENSE).
+Hook kaynakları **GPL-3.0-only** ile lisanslıdır. Ayrıntılar: [LICENSE](LICENSE).
 
-AxSpawners, uxmFarmer and their respective assets remain under their own licenses and are not part of this source distribution.
+AxSpawners, uxmFarmer ve bunlara ait varlıklar kendi lisanslarına tabidir; bu kaynak dağıtımının parçası değildir.
+
