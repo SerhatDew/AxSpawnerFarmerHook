@@ -1,0 +1,97 @@
+package com.blokoyun.farmerhook;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+class LootTransferTest {
+    private static PaperRegistries registries;
+
+    @BeforeAll static void initializePaperRegistries() {
+        registries = new PaperRegistries();
+    }
+
+    @AfterAll
+    static void releaseRegistries() {
+        registries.close();
+    }
+
+    @Test void fractionalRemainderCannotOverfillAnExistingSpawnerSlot() {
+        FarmerCollection farmer = mock(FarmerCollection.class);
+        when(farmer.collect(any(), any(), anyInt())).thenReturn(13);
+        ItemStack item = mock(ItemStack.class);
+        when(item.getType()).thenReturn(Material.BONE);
+        when(item.getAmount()).thenReturn(4);
+        ItemStack key = mock(ItemStack.class);
+        when(key.getMaxStackSize()).thenReturn(64);
+        when(item.clone()).thenReturn(key);
+        Map<ItemStack, Long> storage = new HashMap<>();
+        storage.put(key, 62L);
+        new LootTransfer(farmer).collect(new Location(null, 0, 64, 0), 10,
+            new ArrayList<>(List.of(item)), storage, 1, 1);
+        assertEquals(64L, storage.get(key));
+    }
+
+    @Test void stackedLootIsCollectedOnceWithoutBeingAddedAgainByAxSpawners() {
+        run(4, 10, 40, 40, 0);
+    }
+
+    @Test void nonDivisibleCapacityRetainsTheExactStackedRemainder() {
+        run(4, 10, 13, 13, 27);
+    }
+
+    @Test void rejectedLootStillTakesTheNormalAxSpawnersPath() {
+        run(4, 10, 0, 0, 40);
+    }
+
+    @Test void virtualCountsAboveIntegerRangeDoNotOverflowFarmerStorage() {
+        run(2, 3_000_000_000L, Integer.MAX_VALUE, Integer.MAX_VALUE, 3_852_516_353L);
+    }
+
+    @Test void overflowedSpawnerMultiplicationDoesNotCreateAFarmerDeposit() {
+        run(2, Long.MAX_VALUE, 100, 0, 0);
+    }
+
+    private void run(int unitAmount, long spawners, int capacity, long expectedFarmer, long expectedSpawner) {
+        FarmerCollection farmer = mock(FarmerCollection.class);
+        AtomicInteger farmerStock = new AtomicInteger();
+        when(farmer.collect(any(), any(), anyInt())).thenAnswer(call -> {
+            int accepted = Math.min(call.<Integer>getArgument(2), capacity - farmerStock.get());
+            farmerStock.addAndGet(accepted);
+            return accepted;
+        });
+        AtomicInteger unitCount = new AtomicInteger(unitAmount);
+        ItemStack item = mock(ItemStack.class);
+        when(item.getType()).thenReturn(Material.BONE);
+        when(item.getAmount()).thenAnswer(call -> unitCount.get());
+        doAnswer(call -> { unitCount.set(call.getArgument(0)); return null; }).when(item).setAmount(anyInt());
+        ItemStack normalized = mock(ItemStack.class);
+        when(normalized.getMaxStackSize()).thenReturn(64);
+        when(item.clone()).thenReturn(normalized);
+        List<ItemStack> loot = new ArrayList<>(List.of(item));
+        Map<ItemStack, Long> storage = new HashMap<>();
+        new LootTransfer(farmer).collect(new Location(null, 0, 64, 0), spawners, loot, storage, 0, Long.MAX_VALUE);
+        assertEquals(expectedFarmer, farmerStock.get());
+        if (spawners <= Long.MAX_VALUE / unitAmount) {
+            long normalAxAddition = loot.stream().mapToLong(i -> i.getAmount() * spawners).sum();
+            long residue = storage.values().stream().mapToLong(Long::longValue).sum();
+            assertEquals(expectedSpawner, normalAxAddition + residue);
+            assertEquals((long) unitAmount * spawners, farmerStock.get() + normalAxAddition + residue);
+        } else {
+            assertEquals(unitAmount, item.getAmount());
+            assertEquals(List.of(item), loot);
+            assertTrue(storage.isEmpty());
+        }
+    }
+}

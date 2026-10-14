@@ -1,0 +1,9 @@
+/target/
+/ref/
+/lib/
+/.github/
+/.idea/
+/.vscode/
+*.iml
+*.log
+.DS_Store
