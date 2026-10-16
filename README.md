@@ -47,13 +47,10 @@ Jarları `AxSpawners-1.12.1.jar` ve `uxmFarmer-3.18.1-SNAPSHOT.jar` konumlarına
 ```sh
 mvn install:install-file -Dfile=AxSpawners-1.12.1.jar -DgroupId=com.artillexstudios -DartifactId=AxSpawners -Dversion=1.12.1 -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=uxmFarmer-3.18.1-SNAPSHOT.jar -DgroupId=com.uxplima -DartifactId=uxmFarmer -Dversion=3.18.1-SNAPSHOT -Dpackaging=jar -DgeneratePom=true
-mvn -pl axspawners-uxmfarmer -am clean verify
+mvn clean verify
 ```
 
-Çıktı: `axspawners-uxmfarmer/target/AxSpawnerFarmerHook.jar`. `hook-common` bu jar'a gömülür ve `com.blokoyun.hooks.axfarmer.internal.common` altına taşınır; Paper, AxSpawners ve uxmFarmer bağımlılıkları jar'a eklenmez.
-
-Ana POM ortak derleme ayarlarını yönetir. `config`, `listener`, `integration` ve `transfer` paketleri yalnızca bu hook'a aittir. Oto eritme hook'u ayrı repoda, ayrı sürüm ve JAR olarak kalır; sunucuya ayrıca `hook-common` kurulmaz.
-
+Çıktı: `target/AxSpawnerFarmerHook.jar`. Paper, AxSpawners ve uxmFarmer bağımlılıkları provided kapsamındadır ve jar'a eklenmez.
 ## Kurulum
 
 1. AxSpawners ve uxmFarmer'ı, kendi gerekli bağımlılıklarıyla birlikte kurup etkinleştir.

@@ -3,17 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.blokoyun</groupId>
-    <artifactId>axspawner-farmer-hook-parent</artifactId>
+    <artifactId>axspawners-uxmfarmer</artifactId>
     <version>1.1.0</version>
-    <packaging>pom</packaging>
-    <name>AxSpawnerFarmerHook</name>
+    <packaging>jar</packaging>
+
+    <name>axspawners-uxmfarmer</name>
     <description>AxSpawners loot collection through uxmFarmer's region and storage rules.</description>
     <url>https://github.com/SerhatDew/axspawners-uxmfarmer</url>
-    <modules>
-        <module>hook-common</module>
-        <module>axspawners-uxmfarmer</module>
-    </modules>
+
     <licenses>
         <license>
             <name>GNU General Public License v3.0</name>
@@ -21,6 +20,7 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,28 +30,115 @@
         <junit.version>5.11.0</junit.version>
         <mockito.version>5.15.2</mockito.version>
     </properties>
+
     <repositories>
-        <repository><id>papermc</id><url>https://repo.papermc.io/repository/maven-public/</url></repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
     </repositories>
-    <dependencyManagement>
-        <dependencies>
-            <dependency><groupId>io.papermc.paper</groupId><artifactId>paper-api</artifactId><version>${paper.version}</version><scope>provided</scope></dependency>
-            <dependency><groupId>com.artillexstudios</groupId><artifactId>AxSpawners</artifactId><version>${axspawners.version}</version><scope>provided</scope></dependency>
-            <dependency><groupId>com.uxplima</groupId><artifactId>uxmFarmer</artifactId><version>${uxmfarmer.version}</version><scope>provided</scope></dependency>
-            <dependency><groupId>com.j256.ormlite</groupId><artifactId>ormlite-jdbc</artifactId><version>6.1</version><scope>provided</scope></dependency>
-            <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><version>${junit.version}</version><scope>test</scope></dependency>
-            <dependency><groupId>org.mockito</groupId><artifactId>mockito-core</artifactId><version>${mockito.version}</version><scope>test</scope></dependency>
-        </dependencies>
-    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>${paper.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.artillexstudios</groupId>
+            <artifactId>AxSpawners</artifactId>
+            <version>${axspawners.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.uxplima</groupId>
+            <artifactId>uxmFarmer</artifactId>
+            <version>${uxmfarmer.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.j256.ormlite</groupId>
+            <artifactId>ormlite-jdbc</artifactId>
+            <version>6.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <build>
+        <finalName>AxSpawnerFarmerHook</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>config.yml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>plugin.yml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}</directory>
+                <targetPath>META-INF</targetPath>
+                <includes>
+                    <include>LICENSE</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
-            <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.13.0</version></plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId><version>3.8.1</version>
-                <executions><execution><goals><goal>properties</goal></goals></execution></executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
             </plugin>
-            <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.5.0</version>
-                <configuration><argLine>-javaagent:"${org.mockito:mockito-core:jar}" -Xshare:off</argLine></configuration>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.8.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <argLine>-javaagent:"${org.mockito:mockito-core:jar}" -Xshare:off</argLine>
+                </configuration>
             </plugin>
         </plugins>
     </build>

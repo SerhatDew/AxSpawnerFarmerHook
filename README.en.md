@@ -47,13 +47,10 @@ Place the jars in `AxSpawners-1.12.1.jar` and `uxmFarmer-3.18.1-SNAPSHOT.jar`, t
 ```sh
 mvn install:install-file -Dfile=AxSpawners-1.12.1.jar -DgroupId=com.artillexstudios -DartifactId=AxSpawners -Dversion=1.12.1 -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=uxmFarmer-3.18.1-SNAPSHOT.jar -DgroupId=com.uxplima -DartifactId=uxmFarmer -Dversion=3.18.1-SNAPSHOT -Dpackaging=jar -DgeneratePom=true
-mvn -pl axspawners-uxmfarmer -am clean verify
+mvn clean verify
 ```
 
-Output: `axspawners-uxmfarmer/target/AxSpawnerFarmerHook.jar`. `hook-common` is shaded and relocated to `com.blokoyun.hooks.axfarmer.internal.common`; Paper, AxSpawners and uxmFarmer dependency jars are not bundled.
-
-The parent POM owns shared build settings. The `config`, `listener`, `integration` and `transfer` packages belong only to this hook. Auto-smelting stays independently versioned and shipped from its separate repository; do not install `hook-common` as a server plugin.
-
+Output: `target/AxSpawnerFarmerHook.jar`. Paper, AxSpawners and uxmFarmer dependencies are provided and not bundled into the jar.
 ## Installation
 
 1. Install and enable AxSpawners and uxmFarmer, including their required dependencies.
