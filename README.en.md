@@ -68,7 +68,7 @@ collection:
 
 If an older `collect-spawner-drops: true|false` setting exists, the first startup migrates it to `collection.enabled` without changing its value. Set `collection.enabled: false` to disable collection and restart.
 
-Startup prints the robot banner with the actual plugin name, Maven version and platform. Configuration/API failures include their exception and never report successful startup. Shutdown rejects new transfers, stops only the hook's own listener/task and drains queued loot. PlugMan unload/reload is unsupported; use a full server restart.
+All three standalone hooks use the same lifecycle convention: a gold/yellow robot banner shows the actual plugin name, Maven version and platform, followed by configuration, dependency and integration steps. Timed success is reported only when enabled components are ready. `collection.enabled: false` is reported as inactive rather than successful startup; startup failures retain their exceptions. Shutdown rejects new transfers, stops only the hook's own listener/task and drains queued loot. Incomplete startup and cleanup failures are never reported as successful shutdown. The small logging helper is embedded as source in each JAR; no shared plugin or Maven module is required. PlugMan unload/reload is unsupported; use a full server restart.
 
 ## Collection rules
 

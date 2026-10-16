@@ -68,7 +68,7 @@ collection:
 
 Eski sürümlerdeki `collect-spawner-drops: true|false` ayarı ilk açılışta `collection.enabled` alanına taşınır ve değeri korunur. Toplamayı kapatmak için `collection.enabled: false` yap. Ayarı değiştirdikten sonra yeniden başlat.
 
-Başlangıçta robot bannerı gerçek plugin adı, Maven sürümü ve platformla gösterilir. Config/API hatası exception ile raporlanır; yarım kalan başlangıç başarı sayılmaz. Kapanış önce yeni aktarımı engeller, ardından yalnızca hook'un kendi dinleyicisini ve görevini durdurup kuyruğu boşaltır. PlugMan ile söküp takma desteklenmez; tam sunucu yeniden başlatması kullan.
+Üç bağımsız hook aynı yaşam döngüsü düzenini kullanır: altın/sarı robot bannerı gerçek plugin adı, Maven sürümü ve platformu gösterir; ardından yapılandırma, bağımlılık ve bağlantı adımları raporlanır. Yalnızca etkin bileşenler hazırsa süreli başarı mesajı yazılır. `collection.enabled: false` durumu başarı yerine `Pasif` olarak bildirilir; başlangıç hatası exception ile raporlanır. Kapanış önce yeni aktarımı engeller, ardından yalnızca hook'un kendi dinleyicisini ve görevini durdurup kuyruğu boşaltır. Tamamlanmamış başlangıç veya temizlik hatası başarılı kapanış olarak gösterilmez. Bu küçük log yardımcısı her JAR'ın kendi kaynaklarına dahildir; ortak plugin veya Maven modülü kurulmaz. PlugMan ile söküp takma desteklenmez; tam sunucu yeniden başlatması kullan.
 
 ## Toplama kuralları
 

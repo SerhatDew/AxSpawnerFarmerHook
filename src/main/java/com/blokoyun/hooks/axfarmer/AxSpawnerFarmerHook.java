@@ -23,6 +23,8 @@ public final class AxSpawnerFarmerHook extends JavaPlugin {
     @Override
     public void onEnable() {
         long startedNanos = System.nanoTime();
+        startupComplete = false;
+        startupFailed = false;
         lifecycle.startup();
         try {
             saveDefaultConfig();
@@ -40,13 +42,15 @@ public final class AxSpawnerFarmerHook extends JavaPlugin {
                 ticker = getServer().getScheduler().runTaskTimer(this, listener::drain, 1L, 1L);
                 lifecycle.info("Eşya aktarımı etkinleştirildi.");
             } else {
-                lifecycle.info("Eşya aktarımı yapılandırmadan kapalı; dinleyici ve görev başlatılmadı.");
+                lifecycle.inactive("Eşya aktarımı yapılandırmadan kapalı; dinleyici ve görev başlatılmadı.");
             }
             startupComplete = true;
-            lifecycle.started(startedNanos);
+            if (config.collectionEnabled()) {
+                lifecycle.started(startedNanos);
+            }
         } catch (RuntimeException | LinkageError ex) {
             startupFailed = true;
-            lifecycle.failure("AxSpawnerFarmerHook başlatılamadı.", ex);
+            lifecycle.startupFailed(ex);
             cleanupOwnedResources();
             throw ex;
         }
@@ -59,6 +63,10 @@ public final class AxSpawnerFarmerHook extends JavaPlugin {
         boolean clean = cleanupOwnedResources();
         if (clean && startupComplete && !startupFailed) {
             lifecycle.stopped(startedNanos);
+        } else if (!clean) {
+            lifecycle.shutdownFailed();
+        } else {
+            lifecycle.stoppedBeforeReady();
         }
     }
 
