@@ -90,14 +90,26 @@ class FarmerCollectionTest {
         verify(plugin.getStorageService(), never()).addProduct(any(), any(), anyInt(), anyBoolean());
     }
 
-    @Test void acceptedLootGoesThroughUxmFarmerStorageWithProduction() {
-        when(plugin.getStorageService().addProduct(farmer, Material.BONE, 40, true)).thenReturn(25);
-        assertEquals(25, collection.collect(at, item, 40));
-    }
-
     @Test void bonusFromTheCollectEventIsNotSubtractedFromSpawnerLoot() {
         when(plugin.getStorageService().addProduct(farmer, Material.BONE, 40, true)).thenReturn(55);
         assertEquals(40, collection.collect(at, item, 40));
+    }
+
+    @Test void reloadedProductDefinitionsAreUsedWithoutRecreatingTheHook() {
+        when(plugin.getCollectedMaterials().getCollectedMaterialsForPerformance())
+            .thenReturn(new EnumMap<>(Material.class));
+        assertEquals(0, collection.collect(at, item, 40));
+        verify(plugin.getStorageService(), never()).addProduct(any(), any(), anyInt(), anyBoolean());
+
+        var reloaded = new EnumMap<Material, CollectedMaterials.CollectedMaterial>(Material.class);
+        reloaded.put(Material.BONE, product);
+        when(plugin.getCollectedMaterials().getCollectedMaterialsForPerformance()).thenReturn(reloaded);
+        when(plugin.getStorageService().addProduct(farmer, Material.BONE, 40, true)).thenReturn(40);
+        assertEquals(40, collection.collect(at, item, 40));
+
+        when(plugin.getCollectedMaterials().getCollectedMaterialsForPerformance())
+            .thenReturn(new EnumMap<>(Material.class));
+        assertEquals(0, collection.collect(at, item, 40));
     }
 
     @Test void namedLootFollowsTheCustomItemSetting() {

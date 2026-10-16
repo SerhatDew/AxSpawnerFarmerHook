@@ -59,9 +59,11 @@ Toplamayı kapatmak için `false` yap. Ayarı değiştirdikten sonra sunucuyu ye
 - Yalnızca tanımlanmış ve etkin ürünler toplanır. Özel eşya ve model-data kısıtları korunur.
 - Ürün listesi `uxmFarmer/collected-materials.yml` içindeki `collected-materials` bölümüdür. `SPIDER_EYE`, `PRISMARINE_SHARD`, `PRISMARINE_CRYSTALS` ve `BLAZE_ROD` için de aynı kural geçerlidir; ayrı bir izin listesi yoktur. Tanımsız ürünler çiftçiye eklenmez, AxSpawners deposuna bırakılır.
 - uxmFarmer'ın mevcut depolama servisi kullanılır; toplama olayları, istatistikler, üretim ve otomatik satış davranışı korunur.
-- Stack'li spawner miktarları hesaba katılır. Toplanamayan eşyalar AxSpawners'ın depo limitlerine ve taşma davranışına tabidir.
+- Stack miktarı loot olayı sırasında sabitlenir; sırada beklerken spawner sayısı değişirse üretilmiş miktar değişmez. Çiftçiye sığmayan miktar bölünmeden AxSpawners deposuna yazılır, ardından slotlar ve GUI bir kez güncellenir.
 - AxSpawners'ın asenkron ürettiği eşyalar bir sonraki sunucu tick'inde ana iş parçacığında işlenir; AxSpawners'ın spawner döngüsü bu işlemi beklemez. Çiftçiye sığmayan kısım aynı anda AxSpawners deposuna eklenir.
 - Hook kapanırken sırada bekleyen eşyalar teslim edilir; kapanıştan sonra üretilen eşyalar doğrudan AxSpawners deposuna gider.
+- Ayrı bir ürün configi tutulmaz. uxmFarmer kendi yapılandırmasını yeniden yüklediğinde hook sonraki aktarımda güncel ürün tanımlarını kullanır.
+- Depo kapasitesi AxSpawners 1.12.1'in batch kurallarıyla uygulanır: başlangıçta limitin altındaysa kalan miktar eklenir; limitteyse yalnızca aynı ürünün son eksik stack'i tamamlanır; limit aşılmışsa kalan eklenmez. Hook yere eşya atmaz; dolu depo sınırsız depolama garantisi vermez.
 
 ## Sorun giderme
 
@@ -75,7 +77,9 @@ Toplamayı kapatmak için `false` yap. Ayarı değiştirdikten sonra sunucuyu ye
 
 Sorun bildirirken sunucu, Java, AxSpawners ve uxmFarmer sürümleriyle ilgili konsol hatasını ekle. Token, parola ve oyuncu verilerini paylaşma.
 
-1.0.1 doğrulaması: verilen uxmFarmer 3.18.1-SNAPSHOT jarıyla 20 test geçti. İzole smoke çalıştırmasında dört ürünün her biri gerçek `StorageService.addProduct` üzerinden çiftçiye aktarıldı; tanım kaldırılınca AxSpawners'a verilecek listede kaldı. Paper dünya/bölge nesneleri test doubles kullandı; canlı sunucuda yere düşme sorunu henüz doğrulanmadı.
+1.0.1 review: asenkron aktarımda değişen spawner sayısının üretilmiş miktarı değiştirmesi ve kısmi çiftçi aktarımında erken slot güncellemesinin kalan eşyaları kaybettirmesi düzeltildi. Boş, bir slot limitli depoda 100 üretilen − 13 çiftçiye aktarılan = 87 depo senaryosu eski commit koduyla 64, yeni kodla 87 sonuç verdi.
+
+Doğrulama: 20 test geçti. Gerçek `StorageService.addProduct` ile izole smoke çalıştırmasında dört ürün için kısmi çiftçi/depo aktarımı ve ürün tanımı kaldırılınca tamamının depoya gitmesi doğrulandı. Kuyruk kapanışında üretim anındaki stack miktarıyla teslim de çalıştırıldı. Paper dünya/bölge nesneleri test doubles kullandı; canlı Leaf 26.2 sunucusunda yere düşme sorunu henüz doğrulanmadı.
 
 ## Lisans
 

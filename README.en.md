@@ -59,9 +59,11 @@ Set it to `false` to disable collection. Restart the server after changing the s
 - Only configured, enabled products are collected. Custom-item and model-data restrictions are respected.
 - Products are defined under `collected-materials` in `uxmFarmer/collected-materials.yml`. The same rule applies to `SPIDER_EYE`, `PRISMARINE_SHARD`, `PRISMARINE_CRYSTALS` and `BLAZE_ROD`; there is no separate allowlist. Undefined products are left for AxSpawners storage.
 - Collection uses uxmFarmer's existing storage service, including its events, statistics, production and auto-sell behavior.
-- Stacked spawner quantities are accounted for. Uncollected loot remains subject to AxSpawners storage limits and overflow behavior.
+- The stack count is captured at the loot event; changing the spawner count while a batch is queued does not change the generated quantity. The exact uncollected quantity is written to AxSpawners storage in one addition, then slots and GUIs are refreshed once.
 - Loot that AxSpawners generates asynchronously is handled on the main thread on the next server tick; the AxSpawners spawner loop does not wait for it. Whatever the farmer cannot take is added to AxSpawners storage at the same time.
 - Queued loot is delivered when the hook shuts down; loot generated after that goes straight to AxSpawners storage.
+- No separate product configuration is maintained. After uxmFarmer reloads its configuration, the next transfer uses its current product definitions.
+- AxSpawners 1.12.1 batch capacity rules apply: below the initial slot limit the remainder is added; at the limit only the same product's last partial stack is filled; above the limit the remainder is not stored. The hook never spawns ground items; a full depot is not unlimited storage.
 
 ## Troubleshooting
 
@@ -75,7 +77,9 @@ Set it to `false` to disable collection. Restart the server after changing the s
 
 When reporting a problem, include the server, Java, AxSpawners and uxmFarmer versions along with the relevant console error. Do not share tokens, passwords or player data.
 
-1.0.1 verification: 20 tests passed against the supplied uxmFarmer 3.18.1-SNAPSHOT jar. An isolated smoke run transferred each of the four products through the real `StorageService.addProduct`; removing its definition left it in the input list for AxSpawners. Paper world/region objects were test doubles; the live-server ground-drop issue remains unverified.
+1.0.1 review: fixed queued loot quantities changing with the live spawner count, and early slot refreshes discarding whole units after a partial farmer deposit. Starting with empty storage and a one-slot limit, the 100 generated − 13 collected = 87 remainder scenario retained 64 with the old commit's code and 87 with the fixed code.
+
+Verification: 20 tests passed. An isolated smoke run using the real `StorageService.addProduct` exercised partial farmer/storage transfers for all four products, and full storage fallback after removing their definitions. A queued shutdown flush also used the captured generation-time count. Paper world/region objects were test doubles; the ground-drop issue on the live Leaf 26.2 server remains unverified.
 
 ## License
 

@@ -16,52 +16,45 @@ final class LootTransfer {
     boolean collect(Location location, long spawnerAmount, List<ItemStack> items, Map<ItemStack, Long> storage,
                     long usedSlots, long maxSlots) {
         if (spawnerAmount <= 0) {
+            items.clear();
             return false;
         }
         boolean storageChanged = false;
         for (Iterator<ItemStack> iterator = items.iterator(); iterator.hasNext();) {
             ItemStack item = iterator.next();
             if (item == null || item.getAmount() <= 0 || item.getType().isAir()) {
+                iterator.remove();
                 continue;
             }
             // AxSpawners multiplies the event's amount in Spawner.add, not before the event.
             if (spawnerAmount > Long.MAX_VALUE / item.getAmount()) {
+                iterator.remove();
                 continue;
             }
             long generated = item.getAmount() * spawnerAmount;
             int offered = (int) Math.min(generated, Integer.MAX_VALUE);
-            int accepted = farmers.collect(location, item, offered);
-            if (accepted == 0) {
-                continue;
-            }
+            int accepted = location == null ? 0 : farmers.collect(location, item, offered);
             if (accepted < 0 || accepted > offered) {
                 throw new IllegalStateException("uxmFarmer returned an invalid collected amount: " + accepted);
             }
             long remaining = generated - accepted;
-            int units = (int) (remaining / spawnerAmount);
-            long residue = remaining % spawnerAmount;
-            if (residue != 0 && usedSlots <= maxSlots) {
-                // A partial farmer capacity need not be divisible by the stacked spawner count.
-                // Store this exact residue the way Spawner.add would; the whole units still use it.
+            if (remaining != 0 && usedSlots <= maxSlots) {
+                // Use one exact addition and the batch's original slot state, just like Spawner.add.
                 ItemStack key = item.clone();
                 key.setAmount(1);
-                long toStore = residue;
+                long toStore = remaining;
                 if (usedSlots == maxSlots) {
                     // At the slot limit AxSpawners only tops up the item's last partial stack.
                     long current = storage.getOrDefault(key, 0L);
                     int stackSize = key.getMaxStackSize();
-                    toStore = Math.min(residue, Math.ceilDiv(current, stackSize) * stackSize - current);
+                    toStore = Math.min(remaining, (stackSize - current % stackSize) % stackSize);
                 }
                 if (toStore > 0) {
                     storage.merge(key, toStore, Math::addExact);
                     storageChanged = true;
                 }
             }
-            if (units == 0) {
-                iterator.remove();
-            } else {
-                item.setAmount(units);
-            }
+            iterator.remove();
         }
         return storageChanged;
     }

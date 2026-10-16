@@ -1,6 +1,7 @@
 /target/
 /ref/
 /lib/
+/*.jar
 /.github/modernize/
 /.idea/
 /.vscode/

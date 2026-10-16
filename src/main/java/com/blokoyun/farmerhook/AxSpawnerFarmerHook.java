@@ -18,7 +18,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class AxSpawnerFarmerHook extends JavaPlugin implements Listener {
-    private final LootQueue<Spawner, ItemStack> pending = new LootQueue<>();
+    private record Source(Spawner spawner, long amount) {}
+
+    private final LootQueue<Source, ItemStack> pending = new LootQueue<>();
     private FarmerPlugin farmer;
     private LootTransfer transfer;
     private MethodHandle location;
@@ -66,41 +68,45 @@ public final class AxSpawnerFarmerHook extends JavaPlugin implements Listener {
         if (!farmer.isEnabled()) {
             return;
         }
+        Source source = new Source(event.getSpawner(), event.getSpawner().getAmount());
         if (Bukkit.isPrimaryThread()) {
-            collect(event.getSpawner(), event.getItems());
+            deliver(source, event.getItems());
             return;
         }
         // AxSpawners adds this list right after the event on its ticker thread, and only after
         // the whole tick may it start the next one. Take the loot out of the list so that add is a
         // no-op, then finish it on the next server tick instead of stalling the ticker.
-        pending.offer(event.getSpawner(), event.getItems());
+        pending.offer(source, event.getItems());
     }
 
-    private void deliver(Spawner spawner, List<ItemStack> items) {
-        try {
-            collect(spawner, items);
-        } catch (RuntimeException ex) {
-            getLogger().log(Level.SEVERE, "Spawner loot transfer failed; the rest goes to AxSpawners storage.", ex);
-        }
-        if (!items.isEmpty()) {
-            spawner.add(items);
-        }
-    }
-
-    private void collect(Spawner spawner, List<ItemStack> items) {
-        if (!farmer.isEnabled() || spawner.isRemoved()) {
+    private void deliver(Source source, List<ItemStack> items) {
+        Spawner spawner = source.spawner();
+        if (spawner.isRemoved()) {
             return;
         }
-        Location at;
+        long usedSlots = spawner.getUsedSlots();
+        long maxSlots = spawner.getMaxSlots();
+        boolean storageChanged = false;
         try {
-            at = (Location) location.invokeExact(spawner);
-        } catch (Throwable ex) {
-            throw new IllegalStateException("Cannot resolve AxSpawners location", ex);
-        }
-        // Mutate the list in place: AxSpawners 1.12.1 adds the event's own list, not event.setItems.
-        if (transfer.collect(at, spawner.getAmount(), items, spawner.getStoredItems(),
-            spawner.getUsedSlots(), spawner.getMaxSlots())) {
-            spawner.updateGuis();
+            Location at = null;
+            if (farmer.isEnabled()) {
+                try {
+                    at = (Location) location.invokeExact(spawner);
+                } catch (Throwable ex) {
+                    throw new IllegalStateException("Cannot resolve AxSpawners location", ex);
+                }
+            }
+            storageChanged = transfer.collect(at, source.amount(), items, spawner.getStoredItems(),
+                usedSlots, maxSlots);
+        } catch (RuntimeException ex) {
+            getLogger().log(Level.SEVERE, "Spawner loot transfer failed; the rest goes to AxSpawners storage.", ex);
+            // Earlier entries may already have changed storage before the failing entry.
+            storageChanged = true;
+            transfer.collect(null, source.amount(), items, spawner.getStoredItems(), usedSlots, maxSlots);
+        } finally {
+            if (storageChanged) {
+                spawner.updateGuis();
+            }
         }
     }
 }
