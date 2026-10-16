@@ -5,13 +5,13 @@
 ![Java 21+](https://img.shields.io/badge/Java-21%2B-F4BD60?style=flat-square)
 ![Paper API 1.21.4](https://img.shields.io/badge/Paper_API-1.21.4-55C7F4?style=flat-square)
 [![GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-4ADB9B?style=flat-square)](LICENSE)
-[![Son sürüm](https://img.shields.io/github/v/release/SerhatDew/AxSpawnerFarmerHook?display_name=tag&style=flat-square&color=F4BD60&label=Son%20s%C3%BCr%C3%BCm)](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest)
+[![Son sürüm](https://img.shields.io/github/v/release/SerhatDew/axspawners-uxmfarmer?display_name=tag&style=flat-square&color=F4BD60&label=Son%20s%C3%BCr%C3%BCm)](https://github.com/SerhatDew/axspawners-uxmfarmer/releases/latest)
 
 <p align="center"><img src="assets/hero.svg" alt="AxSpawnerFarmerHook ürün görseli" width="960"></p>
 
 AxSpawners'ın yeni ürettiği eşyaları, spawner'ın bulunduğu bölgedeki uxmFarmer'a aktaran bağımsız Paper eklentisi. AxSpawners veya uxmFarmer üzerinde değişiklik gerektirmez.
 
-[**En yeni JAR'ı indir**](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest/download/AxSpawnerFarmerHook.jar) · [Sürüm notları ve SHA-256](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest)
+[**En yeni JAR'ı indir**](https://github.com/SerhatDew/axspawners-uxmfarmer/releases/latest/download/AxSpawnerFarmerHook.jar) · [Sürüm notları ve SHA-256](https://github.com/SerhatDew/axspawners-uxmfarmer/releases/latest)
 
 ![Yeni spawner eşyalarının çiftçiye aktarımı ve kalan miktarın AxSpawners deposuna yönlendirilmesi](assets/collection-flow.gif)
 
@@ -27,7 +27,7 @@ AxSpawners'ın yeni ürettiği eşyaları, spawner'ın bulunduğu bölgedeki uxm
 
 ## İndir
 
-Hazır `AxSpawnerFarmerHook.jar` dosyasını [en yeni GitHub Release sayfasından](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest) indirin. Kaynaktan derlemiyorsanız **Source code** arşivini değil, sürüm varlıklarındaki JAR'ı kullanın.
+Hazır `AxSpawnerFarmerHook.jar` dosyasını [en yeni GitHub Release sayfasından](https://github.com/SerhatDew/axspawners-uxmfarmer/releases/latest) indirin. Kaynaktan derlemiyorsanız **Source code** arşivini değil, sürüm varlıklarındaki JAR'ı kullanın.
 
 ## Gereksinimler
 

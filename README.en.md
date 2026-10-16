@@ -5,13 +5,13 @@
 ![Java 21+](https://img.shields.io/badge/Java-21%2B-F4BD60?style=flat-square)
 ![Paper API 1.21.4](https://img.shields.io/badge/Paper_API-1.21.4-55C7F4?style=flat-square)
 [![GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-4ADB9B?style=flat-square)](LICENSE)
-[![Latest release](https://img.shields.io/github/v/release/SerhatDew/AxSpawnerFarmerHook?display_name=tag&style=flat-square&color=F4BD60&label=Latest%20release)](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest)
+[![Latest release](https://img.shields.io/github/v/release/SerhatDew/axspawners-uxmfarmer?display_name=tag&style=flat-square&color=F4BD60&label=Latest%20release)](https://github.com/SerhatDew/axspawners-uxmfarmer/releases/latest)
 
 <p align="center"><img src="assets/hero.svg" alt="AxSpawnerFarmerHook product artwork" width="960"></p>
 
 A separate Paper plugin that sends newly generated AxSpawners loot to the uxmFarmer in the spawner's region. Neither dependency needs to be modified.
 
-[**Download the latest JAR**](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest/download/AxSpawnerFarmerHook.jar) · [Release notes and SHA-256](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest)
+[**Download the latest JAR**](https://github.com/SerhatDew/axspawners-uxmfarmer/releases/latest/download/AxSpawnerFarmerHook.jar) · [Release notes and SHA-256](https://github.com/SerhatDew/axspawners-uxmfarmer/releases/latest)
 
 ![New spawner loot is transferred to the farmer, with the remainder routed to AxSpawners storage](assets/collection-flow.gif)
 
@@ -27,7 +27,7 @@ A separate Paper plugin that sends newly generated AxSpawners loot to the uxmFar
 
 ## Download
 
-Download the ready-to-use `AxSpawnerFarmerHook.jar` from the [latest GitHub Release](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest). Unless building from source, use the JAR in the release assets rather than the **Source code** archive.
+Download the ready-to-use `AxSpawnerFarmerHook.jar` from the [latest GitHub Release](https://github.com/SerhatDew/axspawners-uxmfarmer/releases/latest). Unless building from source, use the JAR in the release assets rather than the **Source code** archive.
 
 ## Requirements
 

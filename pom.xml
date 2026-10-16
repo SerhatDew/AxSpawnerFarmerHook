@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <name>AxSpawnerFarmerHook</name>
     <description>AxSpawners loot collection through uxmFarmer's region and storage rules.</description>
-    <url>https://github.com/SerhatDew/AxSpawnerFarmerHook</url>
+    <url>https://github.com/SerhatDew/axspawners-uxmfarmer</url>
     <modules>
         <module>hook-common</module>
         <module>axspawners-uxmfarmer</module>
