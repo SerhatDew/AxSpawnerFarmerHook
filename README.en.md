@@ -5,14 +5,29 @@
 ![Java 21+](https://img.shields.io/badge/Java-21%2B-F4BD60?style=flat-square)
 ![Paper API 1.21.4](https://img.shields.io/badge/Paper_API-1.21.4-55C7F4?style=flat-square)
 [![GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-4ADB9B?style=flat-square)](LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/SerhatDew/AxSpawnerFarmerHook?display_name=tag&style=flat-square&color=F4BD60&label=Latest%20release)](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest)
+
+<p align="center"><img src="assets/hero.svg" alt="AxSpawnerFarmerHook product artwork" width="960"></p>
 
 A separate Paper plugin that sends newly generated AxSpawners loot to the uxmFarmer in the spawner's region. Neither dependency needs to be modified.
+
+[**Download the latest JAR**](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest/download/AxSpawnerFarmerHook.jar) · [Release notes and SHA-256](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest)
 
 ![New spawner loot is transferred to the farmer, with the remainder routed to AxSpawners storage](assets/collection-flow.gif)
 
 *Illustration of the collection flow, not an in-game recording.*
 
-[Requirements](#requirements) · [Installation](#installation) · [Build](#build) · [Collection rules](#collection-rules) · [Troubleshooting](#troubleshooting)
+[Download](#download) · [Highlights](#highlights) · [Requirements](#requirements) · [Installation](#installation) · [Build](#build) · [Collection rules](#collection-rules) · [Troubleshooting](#troubleshooting)
+
+## Highlights
+
+- Sends newly generated AxSpawners loot to the uxmFarmer assigned to the spawner's region.
+- Captures the queued amount and performs the main-thread handoff; anything the farmer cannot take goes to AxSpawners storage.
+- Acts as a bridge over the existing AxSpawners and uxmFarmer setup without maintaining a second product configuration.
+
+## Download
+
+Download the ready-to-use `AxSpawnerFarmerHook.jar` from the [latest GitHub Release](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest). Unless building from source, use the JAR in the release assets rather than the **Source code** archive.
 
 ## Requirements
 

@@ -5,14 +5,29 @@
 ![Java 21+](https://img.shields.io/badge/Java-21%2B-F4BD60?style=flat-square)
 ![Paper API 1.21.4](https://img.shields.io/badge/Paper_API-1.21.4-55C7F4?style=flat-square)
 [![GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-4ADB9B?style=flat-square)](LICENSE)
+[![Son sürüm](https://img.shields.io/github/v/release/SerhatDew/AxSpawnerFarmerHook?display_name=tag&style=flat-square&color=F4BD60&label=Son%20s%C3%BCr%C3%BCm)](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest)
+
+<p align="center"><img src="assets/hero.svg" alt="AxSpawnerFarmerHook ürün görseli" width="960"></p>
 
 AxSpawners'ın yeni ürettiği eşyaları, spawner'ın bulunduğu bölgedeki uxmFarmer'a aktaran bağımsız Paper eklentisi. AxSpawners veya uxmFarmer üzerinde değişiklik gerektirmez.
+
+[**En yeni JAR'ı indir**](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest/download/AxSpawnerFarmerHook.jar) · [Sürüm notları ve SHA-256](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest)
 
 ![Yeni spawner eşyalarının çiftçiye aktarımı ve kalan miktarın AxSpawners deposuna yönlendirilmesi](assets/collection-flow.gif)
 
 *Temsili işleyiş animasyonu; oyun içi kayıt değildir.*
 
-[Gereksinimler](#gereksinimler) · [Kurulum](#kurulum) · [Derleme](#derleme) · [Toplama kuralları](#toplama-kuralları) · [Sorun giderme](#sorun-giderme)
+[İndir](#indir) · [Özellikler](#özellikler) · [Gereksinimler](#gereksinimler) · [Kurulum](#kurulum) · [Derleme](#derleme) · [Toplama kuralları](#toplama-kuralları) · [Sorun giderme](#sorun-giderme)
+
+## Özellikler
+
+- Yeni üretilen AxSpawners eşyalarını spawner bölgesindeki uxmFarmer'a aktarır.
+- Ana iş parçacığı handoff'u ve sabitlenmiş sıra miktarıyla çiftçiye sığmayan kısmı AxSpawners deposuna yollar.
+- Ayrı ürün yapılandırması tutmadan mevcut AxSpawners ve uxmFarmer kurulumlarına köprü olur.
+
+## İndir
+
+Hazır `AxSpawnerFarmerHook.jar` dosyasını [en yeni GitHub Release sayfasından](https://github.com/SerhatDew/AxSpawnerFarmerHook/releases/latest) indirin. Kaynaktan derlemiyorsanız **Source code** arşivini değil, sürüm varlıklarındaki JAR'ı kullanın.
 
 ## Gereksinimler
 
