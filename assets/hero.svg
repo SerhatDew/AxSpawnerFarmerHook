@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">AxSpawnerFarmerHook — AxSpawners to uxmFarmer bridge</title>
+  <desc id="desc">Obsidian and gold product hero with a robot emblem, spawner and farmer motifs, and the supported Java, Paper, AxSpawners and uxmFarmer versions.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#080d18"/>
+      <stop offset="0.56" stop-color="#0b1321"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.72" cy="0.03" r="0.72">
+      <stop offset="0" stop-color="#fbbf24" stop-opacity=".20"/>
+      <stop offset=".44" stop-color="#fbbf24" stop-opacity=".06"/>
+      <stop offset="1" stop-color="#fbbf24" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe08a"/>
+      <stop offset=".45" stop-color="#fbbf24"/>
+      <stop offset="1" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#172235" stop-opacity=".96"/>
+      <stop offset="1" stop-color="#0e1727" stop-opacity=".96"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#8ca1bd" stroke-opacity=".075"/>
+    </pattern>
+  </defs>
+
+  <rect width="960" height="540" rx="26" fill="url(#bg)"/>
+  <rect width="960" height="540" rx="26" fill="url(#glow)"/>
+  <rect x="1" y="1" width="958" height="538" rx="25" fill="url(#grid)"/>
+  <path d="M42 88H918" stroke="#9fb0c9" stroke-opacity=".18"/>
+
+  <g transform="translate(44 34)">
+    <path d="M0 12h14M7 5v14" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+    <text x="30" y="18" fill="#9fb0c9" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="3">PAPERHOOK / INTEGRATION</text>
+  </g>
+  <text x="918" y="53" text-anchor="end" fill="#22d3ee" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="1.8">INDEPENDENT BRIDGE</text>
+
+  <!-- Robot emblem -->
+  <g transform="translate(62 139)">
+    <circle cx="72" cy="72" r="67" fill="#111d31" stroke="#fbbf24" stroke-opacity=".45"/>
+    <path d="M72 8v-15M66 -7h12" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/>
+    <rect x="27" y="27" width="90" height="72" rx="14" fill="#1b2b43" stroke="url(#gold)" stroke-width="4"/>
+    <rect x="40" y="43" width="64" height="35" rx="7" fill="#090f1b" stroke="#536a87" stroke-width="2"/>
+    <circle cx="56" cy="60" r="6" fill="#fbbf24"/>
+    <circle cx="88" cy="60" r="6" fill="#fbbf24"/>
+    <path d="M54 89h36" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M18 52h9M117 52h9" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M49 105v18M95 105v18" stroke="#fbbf24" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="72" cy="8" r="4" fill="#22d3ee"/>
+  </g>
+
+  <g transform="translate(222 135)">
+    <text x="0" y="22" fill="#f8fafc" font-family="Segoe UI,Arial,sans-serif" font-size="42" font-weight="800" letter-spacing="-.9">AxSpawner</text>
+    <text x="0" y="70" fill="url(#gold)" font-family="Segoe UI,Arial,sans-serif" font-size="42" font-weight="800" letter-spacing="-.9">FarmerHook</text>
+    <rect x="2" y="91" width="72" height="4" rx="2" fill="#38bdf8"/>
+    <text x="0" y="127" fill="#d8e2f0" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="600">Spawner loot bridge for AxSpawners + uxmFarmer</text>
+    <text x="0" y="157" fill="#8fa3be" font-family="Segoe UI,Arial,sans-serif" font-size="15">Region-aware collection · main-thread handoff · no dependency jars bundled</text>
+  </g>
+
+  <!-- Small identity cards -->
+  <g transform="translate(222 334)">
+    <rect width="212" height="116" rx="14" fill="url(#panel)" stroke="#2e4663"/>
+    <path d="M20 25h56v56H20z" fill="#0a1220" stroke="#38bdf8" stroke-width="2"/>
+    <path d="M20 39h56M20 53h56M20 67h56M34 25v56M48 25v56M62 25v56" stroke="#38bdf8" stroke-opacity=".7"/>
+    <text x="92" y="45" fill="#f8fafc" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="800">AXSPAWNERS</text>
+    <text x="92" y="68" fill="#fbbf24" font-family="Segoe UI,Arial,sans-serif" font-size="14" font-weight="700">1.12.1</text>
+    <text x="20" y="101" fill="#8fa3be" font-family="Segoe UI,Arial,sans-serif" font-size="12">source storage</text>
+  </g>
+  <g transform="translate(452 334)">
+    <rect width="212" height="116" rx="14" fill="url(#panel)" stroke="#2e4663"/>
+    <path d="M24 78V43l16-14 16 14v35M31 78V59h18v19M56 48h18v30H56z" fill="#162c38" stroke="#22d3ee" stroke-width="2"/>
+    <circle cx="65" cy="56" r="4" fill="#22d3ee"/>
+    <text x="92" y="45" fill="#f8fafc" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="800">UXMFARMER</text>
+    <text x="92" y="68" fill="#22d3ee" font-family="Segoe UI,Arial,sans-serif" font-size="14" font-weight="700">3.18.1-SNAPSHOT</text>
+    <text x="20" y="101" fill="#8fa3be" font-family="Segoe UI,Arial,sans-serif" font-size="12">configured products</text>
+  </g>
+  <g transform="translate(682 334)">
+    <rect width="236" height="116" rx="14" fill="#121d2f" stroke="#fbbf24" stroke-opacity=".6"/>
+    <path d="M20 28h26v26H20zM20 64h26v26H20z" fill="#fbbf24" fill-opacity=".18" stroke="#fbbf24"/>
+    <path d="M26 41h14M33 34v14M26 77h14" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+    <text x="62" y="45" fill="#f8fafc" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="800">RUNTIME CONTRACT</text>
+    <text x="62" y="68" fill="#fbbf24" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="700">JAVA 21+ · PAPER API</text>
+    <text x="62" y="86" fill="#fbbf24" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="700">1.21.4</text>
+    <text x="20" y="105" fill="#fca5a5" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="700">FOLIA UNSUPPORTED</text>
+  </g>
+  <text x="42" y="503" fill="#7185a1" font-family="Segoe UI,Arial,sans-serif" font-size="12" letter-spacing="1.5">CONFIG-LED · GPL-3.0-ONLY · ILLUSTRATION / TEMSİLİ ÜRÜN GÖRSELİ</text>
+  <circle cx="918" cy="499" r="5" fill="#22c55e"/>
+</svg>
