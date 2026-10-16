@@ -32,6 +32,7 @@ class FarmerCollectionTest {
     private FarmerPlugin plugin;
     private Farmer farmer;
     private ItemStack item;
+    private World world;
     private Location at;
     private FarmerCollection collection;
     private CollectedMaterials.CollectedMaterial product;
@@ -40,7 +41,8 @@ class FarmerCollectionTest {
         plugin = mock(FarmerPlugin.class, RETURNS_DEEP_STUBS);
         farmer = mock(Farmer.class);
         item = mock(ItemStack.class);
-        at = new Location(mock(World.class), 1, 64, 1);
+        world = mock(World.class);
+        at = new Location(world, 1, 64, 1);
         when(plugin.getConfiguration().getWorldManagement().isAllowedInWorld(at.getWorld())).thenReturn(true);
         when(plugin.getRegionHook().getFastFarmer(at)).thenReturn(farmer);
         when(farmer.isFarmerEnabled()).thenReturn(true);

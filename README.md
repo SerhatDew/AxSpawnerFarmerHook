@@ -18,7 +18,7 @@ AxSpawners'ın yeni ürettiği eşyaları, spawner'ın bulunduğu bölgedeki uxm
 
 - Java 21 veya üzeri.
 - Paper; proje 1.21.4 API'sine karşı derlenir. Paper 26.2 henüz doğrulanmadı. Folia desteklenmez.
-- AxSpawners 1.12.1 ve uxmFarmer 3.18.0.
+- AxSpawners 1.12.1 ve uxmFarmer 3.18.1-SNAPSHOT.
 - Kaynaktan derlemek için Maven 3.
 
 Java 21 bytecode'u Java 25 ile uyumludur; bu, belirli bir sunucu sürümünün desteklendiği anlamına gelmez.
@@ -27,11 +27,11 @@ Java 21 bytecode'u Java 25 ile uyumludur; bu, belirli bir sunucu sürümünün d
 
 AxSpawners ve uxmFarmer'ı kendi lisans koşullarına uygun şekilde ayrıca edin. Bu eklentilerin jarları ve kaynakları bu repoda dağıtılmaz.
 
-Jarları `lib/AxSpawners-1.12.1.jar` ve `lib/uxmFarmer-3.18.0.jar` konumlarına koyup yerel Maven deposuna yükle:
+Jarları `lib/AxSpawners-1.12.1.jar` ve `uxmFarmer-3.18.1-SNAPSHOT.jar` konumlarına koyup yerel Maven deposuna yükle:
 
 ```sh
 mvn install:install-file -Dfile=lib/AxSpawners-1.12.1.jar -DgroupId=com.artillexstudios -DartifactId=AxSpawners -Dversion=1.12.1 -Dpackaging=jar -DgeneratePom=true
-mvn install:install-file -Dfile=lib/uxmFarmer-3.18.0.jar -DgroupId=com.uxplima -DartifactId=uxmFarmer -Dversion=3.18.0 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=uxmFarmer-3.18.1-SNAPSHOT.jar -DgroupId=com.uxplima -DartifactId=uxmFarmer -Dversion=3.18.1-SNAPSHOT -Dpackaging=jar -DgeneratePom=true
 mvn clean verify
 ```
 
@@ -57,6 +57,7 @@ Toplamayı kapatmak için `false` yap. Ayarı değiştirdikten sonra sunucuyu ye
 - Çiftçi, spawner'ın konumuna göre uxmFarmer'ın yapılandırılmış bölge entegrasyonu üzerinden seçilir.
 - Dünya uxmFarmer tarafından izin verilen dünyalardan olmalıdır. Çiftçi ve çiftçinin doğal eşya toplama anahtarı açık olmalıdır.
 - Yalnızca tanımlanmış ve etkin ürünler toplanır. Özel eşya ve model-data kısıtları korunur.
+- Ürün listesi `uxmFarmer/collected-materials.yml` içindeki `collected-materials` bölümüdür. `SPIDER_EYE`, `PRISMARINE_SHARD`, `PRISMARINE_CRYSTALS` ve `BLAZE_ROD` için de aynı kural geçerlidir; ayrı bir izin listesi yoktur. Tanımsız ürünler çiftçiye eklenmez, AxSpawners deposuna bırakılır.
 - uxmFarmer'ın mevcut depolama servisi kullanılır; toplama olayları, istatistikler, üretim ve otomatik satış davranışı korunur.
 - Stack'li spawner miktarları hesaba katılır. Toplanamayan eşyalar AxSpawners'ın depo limitlerine ve taşma davranışına tabidir.
 - AxSpawners'ın asenkron ürettiği eşyalar bir sonraki sunucu tick'inde ana iş parçacığında işlenir; AxSpawners'ın spawner döngüsü bu işlemi beklemez. Çiftçiye sığmayan kısım aynı anda AxSpawners deposuna eklenir.
@@ -70,8 +71,11 @@ Toplamayı kapatmak için `false` yap. Ayarı değiştirdikten sonra sunucuyu ye
 | Yalnızca bazı ürünler toplanmıyor | uxmFarmer ürün tanımını, ürünün açık olmasını ve varsa model-data eşleşmesini kontrol et. |
 | Çiftçiye sığmayan eşyalar kayboluyor | AxSpawners deposunun kapasitesini kontrol et. Depo doluyken AxSpawners'ın kendi taşma davranışı geçerlidir. |
 | Hook başlatılamıyor | Konsoldaki ilk hatayı incele. AxSpawners ve uxmFarmer'ın etkin olduğundan ve sunucunun gereksinimleri karşıladığından emin ol. |
+| Otomatik üretilen eşyalar yere düşüyor | İncelenen AxSpawners 1.12.1 üretim/depo ekleme akışı yere eşya atmaz. Çalışan sunucunun AxSpawners jarı, diğer loot hookları ve spawner ayarları incelenmelidir; yalnızca uxmFarmer sürümünü güncellemek bu sorunun düzeldiğini kanıtlamaz. |
 
 Sorun bildirirken sunucu, Java, AxSpawners ve uxmFarmer sürümleriyle ilgili konsol hatasını ekle. Token, parola ve oyuncu verilerini paylaşma.
+
+1.0.1 doğrulaması: verilen uxmFarmer 3.18.1-SNAPSHOT jarıyla 20 test geçti. İzole smoke çalıştırmasında dört ürünün her biri gerçek `StorageService.addProduct` üzerinden çiftçiye aktarıldı; tanım kaldırılınca AxSpawners'a verilecek listede kaldı. Paper dünya/bölge nesneleri test doubles kullandı; canlı sunucuda yere düşme sorunu henüz doğrulanmadı.
 
 ## Lisans
 
