@@ -1,6 +1,0 @@
-# Collect newly generated AxSpawners loot into the farmer in the spawner's region.
-# Respects the farmer's natural-drop switch, enabled products, capacity and custom-item rules.
-# Uncollected loot follows AxSpawners storage limits; existing stored loot and XP are not imported.
-# Built against Paper 1.21.4 / Java 21. Paper 26.2 is unverified; Folia is not supported.
-# Restart the server after changing this setting.
-collect-spawner-drops: true

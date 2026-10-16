@@ -1,0 +1,9 @@
+# Config şema sürümü; eklenti sürümünden bağımsızdır.
+config-version: 1
+
+# Spawner loot'unu bulunduğu bölgedeki uxmFarmer'a aktarmayı etkinleştirir.
+collection:
+  enabled: true
+
+# Eski collect-spawner-drops anahtarı varsa ilk açılışta collection.enabled alanına taşınır.
+# Değer true veya false olmalıdır; mevcut kullanıcı değeri korunur.

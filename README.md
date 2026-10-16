@@ -27,29 +27,36 @@ Java 21 bytecode'u Java 25 ile uyumludur; bu, belirli bir sunucu sürümünün d
 
 AxSpawners ve uxmFarmer'ı kendi lisans koşullarına uygun şekilde ayrıca edin. Bu eklentilerin jarları ve kaynakları bu repoda dağıtılmaz.
 
-Jarları `lib/AxSpawners-1.12.1.jar` ve `uxmFarmer-3.18.1-SNAPSHOT.jar` konumlarına koyup yerel Maven deposuna yükle:
+Jarları `AxSpawners-1.12.1.jar` ve `uxmFarmer-3.18.1-SNAPSHOT.jar` konumlarına koyup yerel Maven deposuna yükle:
 
 ```sh
-mvn install:install-file -Dfile=lib/AxSpawners-1.12.1.jar -DgroupId=com.artillexstudios -DartifactId=AxSpawners -Dversion=1.12.1 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=AxSpawners-1.12.1.jar -DgroupId=com.artillexstudios -DartifactId=AxSpawners -Dversion=1.12.1 -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=uxmFarmer-3.18.1-SNAPSHOT.jar -DgroupId=com.uxplima -DartifactId=uxmFarmer -Dversion=3.18.1-SNAPSHOT -Dpackaging=jar -DgeneratePom=true
-mvn clean verify
+mvn -pl axspawners-uxmfarmer -am clean verify
 ```
 
-Çıktı: `target/AxSpawnerFarmerHook.jar`. Bağımlılık jarları bu dosyaya eklenmez.
+Çıktı: `axspawners-uxmfarmer/target/AxSpawnerFarmerHook.jar`. `hook-common` bu jar'a gömülür ve `com.blokoyun.hooks.axfarmer.internal.common` altına taşınır; Paper, AxSpawners ve uxmFarmer bağımlılıkları jar'a eklenmez.
+
+Ana POM ortak derleme ayarlarını yönetir. `config`, `listener`, `integration` ve `transfer` paketleri yalnızca bu hook'a aittir. Oto eritme hook'u ayrı repoda, ayrı sürüm ve JAR olarak kalır; sunucuya ayrıca `hook-common` kurulmaz.
 
 ## Kurulum
 
 1. AxSpawners ve uxmFarmer'ı, kendi gerekli bağımlılıklarıyla birlikte kurup etkinleştir.
 2. `AxSpawnerFarmerHook.jar` dosyasını sunucunun `plugins` klasörüne koy.
+   Aynı köprünün eski JAR'ını kaldır; eski ve yeni kopyayı birlikte çalıştırma.
 3. Sunucuyu yeniden başlat.
 
 Hook, `plugins/AxSpawnerFarmerHook/config.yml` dosyasını oluşturur:
 
 ```yaml
-collect-spawner-drops: true
+config-version: 1
+collection:
+  enabled: true
 ```
 
-Toplamayı kapatmak için `false` yap. Ayarı değiştirdikten sonra sunucuyu yeniden başlat.
+Eski sürümlerdeki `collect-spawner-drops: true|false` ayarı ilk açılışta `collection.enabled` alanına taşınır ve değeri korunur. Toplamayı kapatmak için `collection.enabled: false` yap. Ayarı değiştirdikten sonra yeniden başlat.
+
+Başlangıçta robot bannerı gerçek plugin adı, Maven sürümü ve platformla gösterilir. Config/API hatası exception ile raporlanır; yarım kalan başlangıç başarı sayılmaz. Kapanış önce yeni aktarımı engeller, ardından yalnızca hook'un kendi dinleyicisini ve görevini durdurup kuyruğu boşaltır. PlugMan ile söküp takma desteklenmez; tam sunucu yeniden başlatması kullan.
 
 ## Toplama kuralları
 
@@ -64,22 +71,21 @@ Toplamayı kapatmak için `false` yap. Ayarı değiştirdikten sonra sunucuyu ye
 - Hook kapanırken sırada bekleyen eşyalar teslim edilir; kapanıştan sonra üretilen eşyalar doğrudan AxSpawners deposuna gider.
 - Ayrı bir ürün configi tutulmaz. uxmFarmer kendi yapılandırmasını yeniden yüklediğinde hook sonraki aktarımda güncel ürün tanımlarını kullanır.
 - Depo kapasitesi AxSpawners 1.12.1'in batch kurallarıyla uygulanır: başlangıçta limitin altındaysa kalan miktar eklenir; limitteyse yalnızca aynı ürünün son eksik stack'i tamamlanır; limit aşılmışsa kalan eklenmez. Hook yere eşya atmaz; dolu depo sınırsız depolama garantisi vermez.
-
 ## Sorun giderme
 
 | Belirti | Kontrol |
 | --- | --- |
-| Çiftçi hiç eşya toplamıyor | Hook'un `collect-spawner-drops` ayarını, çiftçinin doğal eşya toplama anahtarını ve spawner'ın bulunduğu bölgedeki çiftçiyi kontrol et. |
+| Çiftçi hiç eşya toplamıyor | Hook'un `collection.enabled` ayarını, çiftçinin doğal eşya toplama anahtarını ve spawner'ın bulunduğu bölgedeki çiftçiyi kontrol et. |
 | Yalnızca bazı ürünler toplanmıyor | uxmFarmer ürün tanımını, ürünün açık olmasını ve varsa model-data eşleşmesini kontrol et. |
 | Çiftçiye sığmayan eşyalar kayboluyor | AxSpawners deposunun kapasitesini kontrol et. Depo doluyken AxSpawners'ın kendi taşma davranışı geçerlidir. |
-| Hook başlatılamıyor | Konsoldaki ilk hatayı incele. AxSpawners ve uxmFarmer'ın etkin olduğundan ve sunucunun gereksinimleri karşıladığından emin ol. |
+| Hook başlatılamıyor | Konsoldaki ilk hatayı incele; `collection.enabled` YAML boolean olmalı (`true` veya `false` kullan). AxSpawners ve uxmFarmer'ın etkin olduğundan emin ol. |
 | Otomatik üretilen eşyalar yere düşüyor | İncelenen AxSpawners 1.12.1 üretim/depo ekleme akışı yere eşya atmaz. Çalışan sunucunun AxSpawners jarı, diğer loot hookları ve spawner ayarları incelenmelidir; yalnızca uxmFarmer sürümünü güncellemek bu sorunun düzeldiğini kanıtlamaz. |
 
 Sorun bildirirken sunucu, Java, AxSpawners ve uxmFarmer sürümleriyle ilgili konsol hatasını ekle. Token, parola ve oyuncu verilerini paylaşma.
 
 1.0.1 review: asenkron aktarımda değişen spawner sayısının üretilmiş miktarı değiştirmesi ve kısmi çiftçi aktarımında erken slot güncellemesinin kalan eşyaları kaybettirmesi düzeltildi. Boş, bir slot limitli depoda 100 üretilen − 13 çiftçiye aktarılan = 87 depo senaryosu eski commit koduyla 64, yeni kodla 87 sonuç verdi.
 
-Doğrulama: 20 test geçti. Gerçek `StorageService.addProduct` ile izole smoke çalıştırmasında dört ürün için kısmi çiftçi/depo aktarımı ve ürün tanımı kaldırılınca tamamının depoya gitmesi doğrulandı. Kuyruk kapanışında üretim anındaki stack miktarıyla teslim de çalıştırıldı. Paper dünya/bölge nesneleri test doubles kullandı; canlı Leaf 26.2 sunucusunda yere düşme sorunu henüz doğrulanmadı.
+1.1.0 doğrulaması: 24 test geçti. Ayrı smoke programında kapalı toplamanın listener/task oluşturmadığı, eski `false` değerinin korunduğu ve geçersiz config sonrasında güvenli kapanışta başarı mesajı yazılmadığı çalıştırıldı. Gerçek `StorageService.addProduct` kullanan izole aktarımda dört ürünün her biri için 40 eşya → 13 çiftçi + 27 Ax deposu, canlı ürün tanımı kaldırılınca 40 Ax deposu sonucu gözlendi. Asenkron kuyruk kapanışında 18 birim bir kez teslim edildi; sonraki 13 birim üreticide kaldı. Dünya, bölge ve kalıcı ürün nesneleri test doubles kullandı; canlı sunucudaki dünya/bölge aktarımı ve yere düşme sorunu bu çalıştırmada doğrulanmadı.
 
 ## Lisans
 

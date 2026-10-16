@@ -27,29 +27,36 @@ Java 21 bytecode is compatible with Java 25, but that does not establish compati
 
 Obtain AxSpawners and uxmFarmer separately under their respective licenses. Their jars and sources are not distributed in this repository.
 
-Place the jars in `lib/AxSpawners-1.12.1.jar` and `uxmFarmer-3.18.1-SNAPSHOT.jar`, then install them into your local Maven repository:
+Place the jars in `AxSpawners-1.12.1.jar` and `uxmFarmer-3.18.1-SNAPSHOT.jar`, then install them into your local Maven repository:
 
 ```sh
-mvn install:install-file -Dfile=lib/AxSpawners-1.12.1.jar -DgroupId=com.artillexstudios -DartifactId=AxSpawners -Dversion=1.12.1 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=AxSpawners-1.12.1.jar -DgroupId=com.artillexstudios -DartifactId=AxSpawners -Dversion=1.12.1 -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=uxmFarmer-3.18.1-SNAPSHOT.jar -DgroupId=com.uxplima -DartifactId=uxmFarmer -Dversion=3.18.1-SNAPSHOT -Dpackaging=jar -DgeneratePom=true
-mvn clean verify
+mvn -pl axspawners-uxmfarmer -am clean verify
 ```
 
-Output: `target/AxSpawnerFarmerHook.jar`. Dependency jars are not bundled into the output.
+Output: `axspawners-uxmfarmer/target/AxSpawnerFarmerHook.jar`. `hook-common` is shaded and relocated to `com.blokoyun.hooks.axfarmer.internal.common`; Paper, AxSpawners and uxmFarmer dependency jars are not bundled.
+
+The parent POM owns shared build settings. The `config`, `listener`, `integration` and `transfer` packages belong only to this hook. Auto-smelting stays independently versioned and shipped from its separate repository; do not install `hook-common` as a server plugin.
 
 ## Installation
 
 1. Install and enable AxSpawners and uxmFarmer, including their required dependencies.
 2. Put `AxSpawnerFarmerHook.jar` in the server's `plugins` directory.
+   Remove the old JAR for this bridge; do not run old and new copies together.
 3. Restart the server.
 
 The hook creates `plugins/AxSpawnerFarmerHook/config.yml`:
 
 ```yaml
-collect-spawner-drops: true
+config-version: 1
+collection:
+  enabled: true
 ```
 
-Set it to `false` to disable collection. Restart the server after changing the setting.
+If an older `collect-spawner-drops: true|false` setting exists, the first startup migrates it to `collection.enabled` without changing its value. Set `collection.enabled: false` to disable collection and restart.
+
+Startup prints the robot banner with the actual plugin name, Maven version and platform. Configuration/API failures include their exception and never report successful startup. Shutdown rejects new transfers, stops only the hook's own listener/task and drains queued loot. PlugMan unload/reload is unsupported; use a full server restart.
 
 ## Collection rules
 
@@ -69,17 +76,17 @@ Set it to `false` to disable collection. Restart the server after changing the s
 
 | Symptom | Check |
 | --- | --- |
-| The farmer collects nothing | Check the hook's `collect-spawner-drops` setting, the farmer's natural-drop switch and the farmer assigned to the spawner's region. |
+| The farmer collects nothing | Check the hook's `collection.enabled` setting, the farmer's natural-drop switch and the farmer assigned to the spawner's region. |
 | Only some products are skipped | Check the uxmFarmer product definition, its enabled state and any required model-data match. |
 | Loot that does not fit the farmer disappears | Check the AxSpawners storage capacity. A full spawner retains AxSpawners' own overflow behavior. |
-| The hook fails to enable | Inspect the first console error. Ensure AxSpawners and uxmFarmer are enabled and the server meets the requirements. |
+| The hook fails to enable | Inspect the first console error; `collection.enabled` must be a YAML boolean (use `true` or `false`). Ensure AxSpawners and uxmFarmer are enabled and the server meets the requirements. |
 | Automatically generated loot falls on the ground | The inspected AxSpawners 1.12.1 generation/storage path does not spawn ground items. Inspect the running server's AxSpawners jar, other loot hooks and spawner settings; updating uxmFarmer alone does not establish a fix. |
 
 When reporting a problem, include the server, Java, AxSpawners and uxmFarmer versions along with the relevant console error. Do not share tokens, passwords or player data.
 
 1.0.1 review: fixed queued loot quantities changing with the live spawner count, and early slot refreshes discarding whole units after a partial farmer deposit. Starting with empty storage and a one-slot limit, the 100 generated − 13 collected = 87 remainder scenario retained 64 with the old commit's code and 87 with the fixed code.
 
-Verification: 20 tests passed. An isolated smoke run using the real `StorageService.addProduct` exercised partial farmer/storage transfers for all four products, and full storage fallback after removing their definitions. A queued shutdown flush also used the captured generation-time count. Paper world/region objects were test doubles; the ground-drop issue on the live Leaf 26.2 server remains unverified.
+1.1.0 verification: 24 tests passed. A standalone smoke program exercised disabled collection without listener/task creation, preserved legacy `false`, and safe shutdown after invalid configuration without false success output. An isolated run using the real `StorageService.addProduct` produced 13 Farmer + 27 Ax units from 40 generated units for each of four products; removing a live product definition routed all 40 to Ax storage. Closing the asynchronous queue delivered 18 units exactly once and left the next 13 units with the producer. World, region and persistent stock objects were test doubles; live world/region transfers and the reported ground-drop issue were not verified in this run.
 
 ## License
 

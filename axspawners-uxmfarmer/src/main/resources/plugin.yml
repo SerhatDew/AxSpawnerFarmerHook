@@ -1,0 +1,7 @@
+name: AxSpawnerFarmerHook
+version: '${project.version}'
+main: com.blokoyun.hooks.axfarmer.AxSpawnerFarmerHook
+authors: [SerhatDew]
+api-version: '1.21.4'
+depend: [AxSpawners, uxmFarmer]
+description: AxSpawners loot collection through uxmFarmer's region and storage rules.
